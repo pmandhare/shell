@@ -1,0 +1,42 @@
+
+#                                                                              #
+#   Script Name : q3_service_status                                            #
+#   Version     : 2.0                                                          #
+#   Date        : 27/7/2023                                                    #
+#   Purpose     : Write a shell script that checks whether a specified service #
+#                   is running and restarts it if it's not running              #
+#                                                                              #
+#################################################################################
+
+#!/bin/bash
+
+SERVICE=$1
+if [[ $# == 1 ]]
+then
+    echo "Executing Script."
+else
+    echo "Script is exepecting exactly 1 arguments"
+    echo "$0 Service name"
+    echo "Stopping Script..."
+exit 0
+fi
+systemctl is-active $SERVICE
+if [[ $? == 0  ]]
+then
+    echo "service is running"
+else
+    echo "Would you like to start $SERVICE? (yes or no)"
+    read ANSWER
+     if [[ "$ANSWER" -eq "yes" ]];
+     then
+        systemctl start $SERVICE
+        systemctl enable $SERVICE
+     echo "$SERVICE service started successfully"
+     elif [[ "$ANSWER" -eq "no" ]];
+     then
+         echo "will not start the service"
+     else
+        echo "not valid answer"
+        exit 1
+   fi
+fi
